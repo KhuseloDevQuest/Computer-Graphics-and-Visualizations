@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analog Clock</title>
+    <script>
+        let canvas, graphics;
+
+        // Draw a line
+        function line(x1, y1, x2, y2, colour, width = 1) {
+            graphics.beginPath();
+            graphics.moveTo(x1, y1);
+            graphics.lineTo(x2, y2);
+            graphics.strokeStyle = colour;
+            graphics.lineWidth = width;
+            graphics.stroke();
+        }
+
+        // Draw the main circle using points
+        function drawCircle(cx, cy, r, numPoints) {
+            graphics.beginPath();
+            let angleStep = 2 * Math.PI / numPoints;
+            let firstX = cx + r * Math.cos(0);
+            let firstY = cy + r * Math.sin(0);
+            graphics.moveTo(firstX, firstY);
+            for (let i = 1; i <= numPoints; i++) {
+                let theta = i * angleStep;
+                let x = cx + r * Math.cos(theta);
+                let y = cy + r * Math.sin(theta);
+                graphics.lineTo(x, y);
+            }
+            graphics.closePath();
+            graphics.strokeStyle = "gray";
+            graphics.lineWidth = 1;
+            graphics.stroke();
+        }
+
+        // Draw clock tick marks
+        function drawTickMarks(cx, cy, outerR) {
+            for (let i = 0; i < 60; i++) {
+                let angle = (i * Math.PI) / 30;
+                let innerR = (i % 5 === 0) ? outerR - 20 : outerR - 10;
+                let x1 = cx + innerR * Math.cos(angle);
+                let y1 = cy + innerR * Math.sin(angle);
+                let x2 = cx + outerR * Math.cos(angle);
+                let y2 = cy + outerR * Math.sin(angle);
+                line(x1, y1, x2, y2, "black");
+            }
+        }
+
+        // Draw grid (optional for debugging)
+        function drawGrid() {
+            for (let i = 0; i <= 600; i += 60) {
+                let color = (i === 300) ? "red" : "black";
+                line(0, i, 600, i, color);
+                line(i, 0, i, 600, color);
+            }
+        }
+
+        // Draw clock hands based on current time
+        function drawHands(cx, cy, radius) {
+            let now = new Date();
+            let seconds = now.getSeconds();
+            let minutes = now.getMinutes();
+            let hours = now.getHours() % 12;
+
+            // Convert to angles in radians
+            let secAngle = (seconds / 60) * 2 * Math.PI;
+            let minAngle = (minutes / 60) * 2 * Math.PI;
+            let hourAngle = ((hours + minutes / 60) / 12) * 2 * Math.PI;
+
+            // Second hand
+            let xSec = cx + (radius - 30) * Math.cos(secAngle - Math.PI / 2);
+            let ySec = cy + (radius - 30) * Math.sin(secAngle - Math.PI / 2);
+            line(cx, cy, xSec, ySec, "red", 1);
+
+            // Minute hand
+            let xMin = cx + (radius - 50) * Math.cos(minAngle - Math.PI / 2);
+            let yMin = cy + (radius - 50) * Math.sin(minAngle - Math.PI / 2);
+            line(cx, cy, xMin, yMin, "black", 3);
+
+            // Hour hand
+            let xHour = cx + (radius - 100) * Math.cos(hourAngle - Math.PI / 2);
+            let yHour = cy + (radius - 100) * Math.sin(hourAngle - Math.PI / 2);
+            line(cx, cy, xHour, yHour, "black", 5);
+        }
+
+        // Main drawing function
+        function drawClock() {
+            // Clear canvas
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawGrid(); // optional
+            drawCircle(300, 300, 240, 200);
+            drawTickMarks(300, 300, 240);
+            drawHands(300, 300, 240);
+        }
+
+        function init() {
+            canvas = document.getElementById("myCanvas");
+            graphics = canvas.getContext("2d");
+            drawClock();
+            setInterval(drawClock, 1000); // update every second
+        }
+    </script>
+</head>
+<body onload="init()">
+    <h1>My Heading</h1>
+    <p>This is a very basic webpage.</p>
+    <canvas id="myCanvas" width="600" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+</body>
+</html>
