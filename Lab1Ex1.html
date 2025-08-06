@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clock Tick Marks</title>
+    <script>
+        let canvas, graphics;
+
+        function line(x1, y1, x2, y2, colour) {
+            graphics.beginPath();
+            graphics.moveTo(x1, y1);
+            graphics.lineTo(x2, y2);
+            graphics.strokeStyle = colour;
+            graphics.stroke();
+        }
+
+        function drawTickMarks(centerX, centerY, outerRadius) {
+            for (let i = 0; i < 60; i++) {
+                let angle = (i * Math.PI) / 30;
+
+                if (i % 5 === 0) {
+                    // Long tick (major)
+                    let startX1 = centerX + (outerRadius - 50) * Math.cos(angle);
+                    let startY1 = centerY + (outerRadius - 50) * Math.sin(angle);
+                    let endX1 = centerX + (outerRadius - 20) * Math.cos(angle);
+                    let endY1 = centerY + (outerRadius - 20) * Math.sin(angle);
+                    line(startX1, startY1, endX1, endY1, "black");
+
+                    // Outer tick (stylistic)
+                    let startX2 = centerX + (outerRadius - 5) * Math.cos(angle);
+                    let startY2 = centerY + (outerRadius - 5) * Math.sin(angle);
+                    let endX2 = centerX + outerRadius * Math.cos(angle);
+                    let endY2 = centerY + outerRadius * Math.sin(angle);
+                    line(startX2, startY2, endX2, endY2, "black");
+                    
+                } else {
+                    // Short tick (minor)
+                    let innerRadius = outerRadius - 5;
+                    let startX = centerX + innerRadius * Math.cos(angle);
+                    let startY = centerY + innerRadius * Math.sin(angle);
+                    let endX = centerX + outerRadius * Math.cos(angle);
+                    let endY = centerY + outerRadius * Math.sin(angle);
+                    line(startX, startY, endX, endY, "black");
+                }
+            }
+        }
+
+        function drawClockHands(centerX, centerY, radius) {
+            let now = new Date();
+            let ms = now.getMilliseconds();
+            let seconds = now.getSeconds() + ms / 1000;
+            let minutes = now.getMinutes() + seconds / 60;
+            let hours = now.getHours() % 12 + minutes / 60;
+
+            // Calculate angles
+            let secAngle = (seconds * Math.PI) / 30;
+            let minAngle = (minutes * Math.PI) / 30;
+            let hourAngle = (hours * Math.PI) / 6;
+
+            // Hour hand
+            let hourX = centerX + (radius - 100) * Math.cos(hourAngle);
+            let hourY = centerY + (radius - 100) * Math.sin(hourAngle);
+            line(centerX, centerY, hourX, hourY, "black");
+
+            // Minute hand
+            let minX = centerX + (radius - 50) * Math.cos(minAngle);
+            let minY = centerY + (radius - 50) * Math.sin(minAngle);
+            line(centerX, centerY, minX, minY, "black");
+
+            // Second hand (in red)
+            let secX = centerX + (radius - 20) * Math.cos(secAngle);
+            let secY = centerY + (radius - 20) * Math.sin(secAngle);
+            line(centerX, centerY, secX, secY, "red");
+
+            // Center dot
+            graphics.beginPath();
+            graphics.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+            graphics.fillStyle = "black";
+            graphics.fill();
+        }
+
+        function init() {
+            canvas = document.getElementById("myCanvas");
+            graphics = canvas.getContext("2d");
+
+            // Clear canvas
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw clock face
+            graphics.beginPath();
+            graphics.arc(300, 300, 240, 0, 2 * Math.PI);
+            graphics.stroke();
+
+            drawTickMarks(300, 300, 240);
+            drawClockHands(300, 300, 240);
+
+            // Display date
+            let d = new Date();
+            document.getElementById("paragraph").innerHTML = d.toDateString() + " " + d.toLocaleTimeString();
+        }
+
+        // Call init every 10ms for smooth animation
+        setInterval(init, 10);
+    </script>
+</head>
+
+<body>
+    <h1 style="text-align: center;">My Analog Clock</h1>
+    <p id="paragraph" style="text-align: center;"></p>
+    <canvas id="myCanvas" width="600" height="600" style="border:1px solid #d3d3d3; display: block; margin: auto;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+</body>
+</html>
