@@ -35,14 +35,75 @@
      *  actions are not necessary in this program, since the function will
      *  only be called once.)
      */
-    function draw() {
-    
-        graphics.clearRect(0,0,600,600);        
-        // TODO: insert code to draw the image for Exercise 1!
+function draw() {
+    graphics.clearRect(0, 0, 600, 600);
 
+    // 1. Dividing lines
+    graphics.strokeStyle = "black";
+    graphics.lineWidth = 1;
+    graphics.strokeRect(0, 0, 600, 600); // Outer border
+
+    // Since strokeLine is not a standard canvas method, replace with moveTo/lineTo + stroke:
+    graphics.beginPath();
+    graphics.moveTo(300, 0);
+    graphics.lineTo(300, 600);
+    graphics.moveTo(0, 300);
+    graphics.lineTo(600, 300);
+    graphics.stroke();
+
+    // Orange horizontal lines - adjusted spacing and length
+    graphics.strokeStyle = "orange";
+    graphics.lineWidth = 6;
+    for (let y = 20; y <= 280; y += 18) {
+        graphics.beginPath();
+        graphics.moveTo(20, y);
+        graphics.lineTo(280, y);
+        graphics.stroke();
     }
-    
-    
+
+    // Blue flag-like polygon on top-right quadrant
+    graphics.fillStyle = "blue";
+    graphics.beginPath();
+    graphics.moveTo(350, 50);
+    graphics.lineTo(550, 50);
+    graphics.lineTo(550, 250);
+    graphics.lineTo(450, 150);
+    graphics.lineTo(350, 250);
+    graphics.closePath();
+    graphics.fill();
+
+   graphics.fillStyle = "blue";
+        graphics.fillPoly(350,50,550,50,550,250,450,150,350,250);
+        const coloors = ["red","yellow","lime","cyan","magenta"];
+        let centy = 550;
+        let xcent = 150;
+        let radx = 140;
+        let rady = 27
+        for(let i=0;i<coloors.length;i++){
+            graphics.fillStyle = coloors[i];
+            graphics.strokeStyle ="black";
+            graphics.lineWidth = 2;
+            graphics.fillOval(xcent,centy,radx,rady)
+            graphics.strokeOval(xcent,centy,radx,rady)
+            centy = centy-2*rady;
+            radx = radx-25
+
+        }
+        
+         graphics.beginPath();
+        graphics.moveTo(450,580);
+        // Left lobe
+        graphics.bezierCurveTo(250,480,270,220,450,350);
+        // Right lobe
+        graphics.bezierCurveTo(630,220,650,480,450,580);
+        graphics.fillStyle = "red";
+        graphics.fill();
+        graphics.lineWidth = 8;
+         graphics.stroke();
+         graphics.fillStyle ="red"
+         graphics.fill();  
+}
+
     /**
      * Sets up a transformation in the graphics context so that the canvas will
      * show x-values in the range from left to right, and y-values in the range
