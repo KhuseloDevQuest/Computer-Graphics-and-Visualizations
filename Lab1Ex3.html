@@ -5,7 +5,7 @@
 <title>Lab 2, Exercise 2</title>
 <style>
     body {
-        background-color: #DDDDDD;
+        background-color: #EAEAEA;
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
@@ -101,25 +101,25 @@
             if (Math.abs(x - prevX) + Math.abs(y - prevY) < 3) return;
             
             // Set color
-            if (colorChoice == 0) {
+            if (colorChoice == 0) { // Random
                 graphics.fillStyle = randomColorString();
                 graphics.strokeStyle = randomColorString();
             }
-            else if (colorChoice == 1) {
-                graphics.fillStyle = "red";
-                graphics.strokeStyle = "red";
+            else if (colorChoice == 1) { // Sunset Orange
+                graphics.fillStyle = "#FF5733";
+                graphics.strokeStyle = "#FF5733";
             }
-            else if (colorChoice == 2) {
-                graphics.fillStyle = "green";
-                graphics.strokeStyle = "green";
+            else if (colorChoice == 2) { // Lime Green
+                graphics.fillStyle = "#A3D900";
+                graphics.strokeStyle = "#A3D900";
             }
-            else if (colorChoice == 3) {
-                graphics.fillStyle = "blue";
-                graphics.strokeStyle = "blue";
+            else if (colorChoice == 3) { // Ocean Blue
+                graphics.fillStyle = "#1CA3EC";
+                graphics.strokeStyle = "#1CA3EC";
             }
-            else if (colorChoice == 4) {
-                graphics.fillStyle = "purple";
-                graphics.strokeStyle = "purple";
+            else if (colorChoice == 4) { // Magenta Pink
+                graphics.fillStyle = "#E83E8C";
+                graphics.strokeStyle = "#E83E8C";
             }
             
             // Tool actions
@@ -136,13 +136,19 @@
                 graphics.lineTo(x, y);
                 graphics.stroke();
             }
-            else if (toolChoice == 3) { // Circle from Start
+            else if (toolChoice == 3) { // Circle from Start - concentric circles
                 graphics.putImageData(savedImageData, 0, 0);
-                var radius = Math.sqrt((x-startX)*(x-startX) + (y-startY)*(y-startY));
-                graphics.beginPath();
-                graphics.arc(startX, startY, radius, 0, 2*Math.PI);
-                graphics.stroke();
+
+                let radius = Math.sqrt((x - startX) * (x - startX) + (y - startY) * (y - startY));
+
+                // Draw circles from largest to smallest
+                for (let r = radius; r > 0; r -= 10) {  // step controls spacing
+                    graphics.beginPath();
+                    graphics.arc(startX, startY, r, 0, 2 * Math.PI);
+                    graphics.stroke();
+                }
             }
+
             else if (toolChoice == 4) { // Eraser
                 graphics.fillStyle = "white";
                 graphics.fillRect(x-15,y-15,30,30);
@@ -255,17 +261,17 @@
     <b>Color:</b>
     <select id="colorChoice">
         <option value="0">Random</option>
-        <option value="1">Red</option>
-        <option value="2">Green</option>
-        <option value="3">Blue</option>
-        <option value="4">Purple</option>
+        <option value="1">Sunset Orange</option>
+        <option value="2">Lime Green</option>
+        <option value="3">Ocean Blue</option>
+        <option value="4">Magenta Pink</option>
     </select>
     
     <b>Tool:</b>
     <select id="toolChoice">
         <option value="0">Squares</option>
         <option value="1">Stars</option>
-        <option value="2">Line</option>
+        <option value="2">Curve</option>
         <option value="3">Circle from Start</option>
         <option value="4">Eraser</option>
     </select>
